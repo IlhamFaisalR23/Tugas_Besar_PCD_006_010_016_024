@@ -17,4 +17,11 @@ Control Metal Slug game using hand gestures and body movements detected by Media
 
 ## Installation
 ```bash
+cd 02_FastAPI_Interface
+```
+```bash
 pip install -r requirements.txt
+```
+```bash
+python main.py
+```
