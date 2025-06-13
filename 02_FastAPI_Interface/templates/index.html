@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Metal Slug Gesture Controller</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #1a1a1a;
+                color: white;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .controls {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            button {
+                padding: 12px 24px;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            .start-btn {
+                background-color: #4CAF50;
+                color: white;
+            }
+            .start-btn:hover {
+                background-color: #45a049;
+            }
+            .stop-btn {
+                background-color: #f44336;
+                color: white;
+            }
+            .stop-btn:hover {
+                background-color: #da190b;
+            }
+            .video-container {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .video-feed {
+                border: 3px solid #444;
+                border-radius: 10px;
+                max-width: 100%;
+                height: auto;
+            }
+            .gestures-info {
+                background-color: #2a2a2a;
+                padding: 20px;
+                border-radius: 10px;
+                margin-top: 20px;
+            }
+            .gesture-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                border-bottom: 1px solid #444;
+            }
+            .gesture-item:last-child {
+                border-bottom: none;
+            }
+            .status {
+                text-align: center;
+                padding: 10px;
+                margin: 20px 0;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            .status.ready {
+                background-color: #2196F3;
+            }
+            .status.running {
+                background-color: #4CAF50;
+            }
+            .status.stopped {
+                background-color: #f44336;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎮 Metal Slug Gesture Controller</h1>
+                <p>Control Metal Slug with your hand gestures!</p>
+            </div>
+            
+            <div class="controls">
+                <button class="start-btn" onclick="startDetection()">▶️ Start Detection</button>
+                <button class="stop-btn" onclick="stopDetection()">⏹️ Stop Detection</button>
+            </div>
+            
+            <div id="status" class="status ready">Ready to start detection</div>
+            
+            <div class="video-container">
+                <img id="videoFeed" class="video-feed" src="/video_feed" alt="Camera feed will appear here when started" style="display: none;">
+                <div id="placeholder" style="background-color: #333; height: 480px; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                    <p>Click "Start Detection" to begin</p>
+                </div>
+            </div>
+            
+            <div class="gestures-info">
+                <h2>🤲 Available Gestures</h2>
+                <div class="gesture-item">
+                    <span><strong>🤚 Idle (Diam)</strong></span>
+                    <span>No key press</span>
+                </div>
+                <div class="gesture-item">
+                    <span><strong>👉 Run (Lari)</strong></span>
+                    <span>D key - Move forward</span>
+                </div>
+                <div class="gesture-item">
+                    <span><strong>🔫 Shoot (Tembak)</strong></span>
+                    <span>J key - Fire weapon</span>
+                </div>
+                <div class="gesture-item">
+                    <span><strong>💣 Grenade (Granat)</strong></span>
+                    <span>L key - Throw grenade</span>
+                </div>
+                <div class="gesture-item">
+                    <span><strong>🦘 Jump (Lompat)</strong></span>
+                    <span>K key - Jump</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center; color: #888;">
+                <p>💡 Tips: Make sure you have good lighting and clear hand movements for better detection</p>
+                <p>🎯 Test in Notepad first before playing Metal Slug!</p>
+            </div>
+        </div>
+        
+        <script>
+            async function startDetection() {
+                try {
+                    const response = await fetch('/start');
+                    const data = await response.json();
+                    
+                    document.getElementById('status').className = 'status running';
+                    document.getElementById('status').textContent = '🟢 Detection Running - ' + data.status;
+                    
+                    // Show video feed
+                    document.getElementById('videoFeed').style.display = 'block';
+                    document.getElementById('placeholder').style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('Error starting detection:', error);
+                    alert('Failed to start detection');
+                }
+            }
+            
+            async function stopDetection() {
+                try {
+                    const response = await fetch('/stop');
+                    const data = await response.json();
+                    
+                    document.getElementById('status').className = 'status stopped';
+                    document.getElementById('status').textContent = '🔴 Detection Stopped - ' + data.status;
+                    
+                    // Hide video feed
+                    document.getElementById('videoFeed').style.display = 'none';
+                    document.getElementById('placeholder').style.display = 'flex';
+                    
+                } catch (error) {
+                    console.error('Error stopping detection:', error);
+                    alert('Failed to stop detection');
+                }
+            }
+        </script>
+    </body>
+    </html>
