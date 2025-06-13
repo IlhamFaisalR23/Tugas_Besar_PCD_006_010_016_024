@@ -28,8 +28,8 @@ Pindah ke direktori yang berisikan aplikasi utama
 ```bash
 cd 02_FastAPI_Interface
 ```
-OPTIONAL : Gunakan Virtual Environment
-Instalasi modul modul dari requirements.txt
+OPTIONAL : Gunakan Virtual Environment lalu lakukan
+instalasi modul modul dari requirements.txt
 ```bash
 pip install -r requirements.txt
 ```
