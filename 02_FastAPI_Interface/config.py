@@ -1,5 +1,7 @@
+from pynput.keyboard import Key, Controller
+
 class GestureConfig:
-    """Configuration for gesture detection"""
+    """Konfigurasi untuk deteksi"""
     
     # MediaPipe confidence thresholds
     HAND_DETECTION_CONFIDENCE = 0.7
@@ -15,18 +17,18 @@ class GestureConfig:
     JUMPING_Y_THRESHOLD = 0.3
 
 class KeyBindings:
-    """Key bindings for Metal Slug actions"""
+    """Key bindings untuk Metal Slug"""
     
     ACTION_KEYS = {
         "idle": None,      # No key press
-        "run": 'd',        # Move forward
-        "shoot": 'j',      # Shoot weapon
-        "grenade": 'l',    # Throw grenade
-        "jump": 'k'        # Jump
+        "run": Key.right,        # Move forward
+        "shoot": 'z',      # Shoot weapon
+        "grenade": 'c',    # Throw grenade
+        "jump": 'x'        # Jump
     }
 
 class APIConfig:
-    """API configuration"""
+    """Konfigurasi API"""
     
     HOST = "0.0.0.0"
     PORT = 8000

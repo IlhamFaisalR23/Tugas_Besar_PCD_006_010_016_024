@@ -92,51 +92,48 @@
     <body>
         <div class="container">
             <div class="header">
-                <h1>🎮 Metal Slug Gesture Controller</h1>
-                <p>Control Metal Slug with your hand gestures!</p>
+                <h1>🎮 Kontrol Metal Slug dengan Gestur</h1>
             </div>
             
             <div class="controls">
-                <button class="start-btn" onclick="startDetection()">▶️ Start Detection</button>
-                <button class="stop-btn" onclick="stopDetection()">⏹️ Stop Detection</button>
+                <button class="start-btn" onclick="startDetection()">▶️ Mulai Deteksi</button>
+                <button class="stop-btn" onclick="stopDetection()">⏹️ Hentikan Deteksi</button>
             </div>
             
-            <div id="status" class="status ready">Ready to start detection</div>
-            
             <div class="video-container">
-                <img id="videoFeed" class="video-feed" src="/video_feed" alt="Camera feed will appear here when started" style="display: none;">
+                <img id="videoFeed" class="video-feed" src="/video_feed" alt="Preview kamera akan muncul di sini" style="display: none;">
                 <div id="placeholder" style="background-color: #333; height: 480px; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
-                    <p>Click "Start Detection" to begin</p>
+                    <p>Klik "Mulai Deteksi" untuk memulai</p>
                 </div>
             </div>
             
             <div class="gestures-info">
-                <h2>🤲 Available Gestures</h2>
+                <h2>🤲 Gestur yang tersedia</h2>
                 <div class="gesture-item">
                     <span><strong>🤚 Idle (Diam)</strong></span>
-                    <span>No key press</span>
+                    <span>Tidak ada tombol yang tertekan</span>
                 </div>
                 <div class="gesture-item">
                     <span><strong>👉 Run (Lari)</strong></span>
-                    <span>D key - Move forward</span>
+                    <span>Right Arrow key - Maju ke depan/kanan</span>
                 </div>
                 <div class="gesture-item">
                     <span><strong>🔫 Shoot (Tembak)</strong></span>
-                    <span>J key - Fire weapon</span>
+                    <span>Z key - Menembaks</span>
                 </div>
                 <div class="gesture-item">
                     <span><strong>💣 Grenade (Granat)</strong></span>
-                    <span>L key - Throw grenade</span>
+                    <span>C key - Lempar grenade</span>
                 </div>
                 <div class="gesture-item">
                     <span><strong>🦘 Jump (Lompat)</strong></span>
-                    <span>K key - Jump</span>
+                    <span>X key - Jump</span>
                 </div>
             </div>
             
             <div style="margin-top: 30px; text-align: center; color: #888;">
-                <p>💡 Tips: Make sure you have good lighting and clear hand movements for better detection</p>
-                <p>🎯 Test in Notepad first before playing Metal Slug!</p>
+                <p>💡 Tips: Pastikan pencahayaan cukup untuk dapat mendeteksi gestur tubuh</p>
+                <p>🎯 Untuk melakukan testing terlebih dahulu, gunakan notepad</p>
             </div>
         </div>
         
@@ -149,7 +146,7 @@
                     document.getElementById('status').className = 'status running';
                     document.getElementById('status').textContent = '🟢 Detection Running - ' + data.status;
                     
-                    // Show video feed
+                    // Feed Video
                     document.getElementById('videoFeed').style.display = 'block';
                     document.getElementById('placeholder').style.display = 'none';
                     
@@ -167,7 +164,7 @@
                     document.getElementById('status').className = 'status stopped';
                     document.getElementById('status').textContent = '🔴 Detection Stopped - ' + data.status;
                     
-                    // Hide video feed
+                    // Sembunyikan video feed
                     document.getElementById('videoFeed').style.display = 'none';
                     document.getElementById('placeholder').style.display = 'flex';
                     
