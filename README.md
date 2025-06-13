@@ -15,13 +15,25 @@ Control Metal Slug game using hand gestures and body movements detected by Media
 - **Grenade**: Hand behind back throwing motion - 'L' key  
 - **Jump**: Arms raised - 'K' key
 
-## Installation
+## Instalasi
+Klone repositori ini
+```bash
+git clone https://github.com/IlhamFaisalR23/Tugas_Besar_PCD_QuadroPipe-006_010_016_024.git
+```
+Pindah ke direktori hasil clone repositori
+```bash
+cd Tugas_Besar_PCD_QuadroPipe-006_010_016_024
+```
+Pindah ke direktori yang berisikan aplikasi utama
 ```bash
 cd 02_FastAPI_Interface
 ```
+OPTIONAL : Gunakan Virtual Environment
+Instalasi modul modul dari requirements.txt
 ```bash
 pip install -r requirements.txt
 ```
+Jalankan aplikasi utama
 ```bash
 python main.py
 ```
