@@ -10,10 +10,10 @@ Control Metal Slug game using hand gestures and body movements detected by Media
 
 ## Gestures
 - **Idle**: No movement - no key press
-- **Run**: Hand forward - 'D' key (move forward)
-- **Shoot**: Hand raised like holding weapon - 'J' key
-- **Grenade**: Hand behind back throwing motion - 'L' key  
-- **Jump**: Arms raised - 'K' key
+- **Run**: Hand forward - 'Right Arrow' key (move forward)
+- **Shoot**: Hand raised like holding weapon - 'X' key
+- **Grenade**: Hand behind back throwing motion - 'S' key  
+- **Jump**: Arms raised - 'Z' key
 
 ## Instalasi
 Klone repositori ini
