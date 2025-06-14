@@ -40,4 +40,4 @@ class APIConfig:
     HOST = "0.0.0.0"
     PORT = 8000
     CAMERA_INDEX = 0
-    FPS = 60
+    FPS = 30
