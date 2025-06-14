@@ -22,9 +22,12 @@ class KeyBindings:
     ACTION_KEYS = {
         "idle": None,      # No key press
         "run": Key.right,        # Move forward
+        "backward": Key.left,    # Move backward
         "shoot": 'x',      # Shoot weapon
+        "shoot_up": [Key.up, 'x'],  # Shoot upward (kombinasi tombol)
         "grenade": 's',    # Throw grenade
-        "jump": 'z'        # Jump
+        "jump": 'z',       # Jump
+        "crouch": Key.down       # Crouch
     }
 
 class APIConfig:

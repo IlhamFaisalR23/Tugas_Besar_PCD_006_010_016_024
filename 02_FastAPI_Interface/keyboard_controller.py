@@ -6,7 +6,7 @@ class KeyboardController:
     def __init__(self):
         self.keyboard = Controller()
         self.current_action = "idle"
-        self.key_pressed = None
+        self.pressed_keys = set()  # Gunakan set untuk melacak tombol yang ditekan
         self.last_action_time = time.time()
         
     def execute_action(self, action):
@@ -17,9 +17,9 @@ class KeyboardController:
         if current_time - self.last_action_time < 0.1:
             return
             
-        # If action changed, release previous key and press new one
+        # Jika aksi berubah, lepaskan tombol sebelumnya dan tekan tombol baru
         if action != self.current_action:
-            self._release_current_key()
+            self._release_all_keys()
             self._press_action_key(action)
             self.current_action = action
             self.last_action_time = current_time
@@ -31,23 +31,34 @@ class KeyboardController:
         if action in key_map:
             key = key_map[action]
             try:
-                self.keyboard.press(key)
-                self.key_pressed = key
-                print(f"Pressed: {key} for action: {action}")
+                # Tangani satu tombol
+                if isinstance(key, (str, Key)):
+                    self.keyboard.press(key)
+                    self.pressed_keys.add(key)
+                    print(f"Pressed: {key} for action: {action}")
+                
+                # Tangani kombinasi tombol
+                elif isinstance(key, list):
+                    for combo_key in key:
+                        self.keyboard.press(combo_key)
+                        self.pressed_keys.add(combo_key)
+                    print(f"Pressed combination: {key} for action: {action}")
             except Exception as e:
                 print(f"Error pressing key {key}: {e}")
     
-    def _release_current_key(self):
-        """Release currently pressed key"""
-        if self.key_pressed:
+    def _release_all_keys(self):
+        """Lepaskan semua tombol yang sedang ditekan"""
+        for key in list(self.pressed_keys):
             try:
-                self.keyboard.release(self.key_pressed)
-                print(f"Released: {self.key_pressed}")
-                self.key_pressed = None
+                self.keyboard.release(key)
+                print(f"Released: {key}")
             except Exception as e:
-                print(f"Error releasing key: {e}")
+                print(f"Error releasing key {key}: {e}")
+        
+        # Kosongkan set tombol yang ditekan
+        self.pressed_keys.clear()
+        self.current_action = "idle"
     
     def release_all_keys(self):
         """Release all keys when stopping"""
-        self._release_current_key()
-        self.current_action = "idle"
+        self._release_all_keys()
