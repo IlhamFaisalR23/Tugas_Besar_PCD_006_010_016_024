@@ -22,9 +22,9 @@ class KeyBindings:
     ACTION_KEYS = {
         "idle": None,      # No key press
         "run": Key.right,        # Move forward
-        "shoot": 'z',      # Shoot weapon
-        "grenade": 'c',    # Throw grenade
-        "jump": 'x'        # Jump
+        "shoot": 'x',      # Shoot weapon
+        "grenade": 's',    # Throw grenade
+        "jump": 'z'        # Jump
     }
 
 class APIConfig:
