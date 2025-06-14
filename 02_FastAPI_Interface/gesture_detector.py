@@ -88,8 +88,17 @@ class GestureDetector:
         
         # Check for pose gestures (jumping)
         if pose_results.pose_landmarks:
-            if self._is_jumping_gesture(pose_results.pose_landmarks.landmark, w, h):
+            landmarks = pose_results.pose_landmarks.landmark
+            if self._is_jumping_gesture(landmarks, w, h):
                 action = "jump"
+            elif self._is_turning_right_down_gesture(landmarks, w, h):
+                action = "turn_right_down"
+            elif self._is_turning_left_down_gesture(landmarks, w, h):
+                action = "turn_left_down"
+            elif self._is_turning_left_gesture(landmarks, w, h):
+                action = "turn_left"
+            elif self._is_turning_right_gesture(landmarks, w, h):
+                action = "turn_right"
         
         return action
     
@@ -109,6 +118,100 @@ class GestureDetector:
         if wrist_y < h * 0.6 and index_y < wrist_y and abs(index_y - middle_y) > 20:
             return True
         return False
+    
+    def _is_turning_left_gesture(self, pose_landmarks, w, h):
+        """Detect if head is turned 45 degrees to the left"""
+        nose = pose_landmarks[0]
+        left_ear = pose_landmarks[7]
+        right_ear = pose_landmarks[8]
+
+        # Hitung posisi piksel
+        nose_x = nose.x * w
+        left_ear_x = left_ear.x * w
+        right_ear_x = right_ear.x * w
+
+        # Hitung jarak hidung ke masing-masing telinga
+        dist_left = abs(nose_x - left_ear_x)
+        dist_right = abs(nose_x - right_ear_x)
+
+        # Jika hidung lebih dekat ke telinga kanan daripada telinga kiri,
+        # maka kemungkinan menengok ke kiri
+        if dist_right < dist_left * 0.5:
+            return True
+        return False
+    
+    def _is_turning_right_gesture(self, pose_landmarks, w, h):
+        """Detect if head is turned 45 degrees to the right"""
+        nose = pose_landmarks[0]
+        left_ear = pose_landmarks[7]
+        right_ear = pose_landmarks[8]
+
+        # Hitung posisi piksel
+        nose_x = nose.x * w
+        left_ear_x = left_ear.x * w
+        right_ear_x = right_ear.x * w
+
+        # Hitung jarak hidung ke masing-masing telinga
+        dist_left = abs(nose_x - left_ear_x)
+        dist_right = abs(nose_x - right_ear_x)
+
+        # Jika hidung lebih dekat ke telinga kiri daripada telinga kanan,
+        # maka kemungkinan menengok ke kanan
+        if dist_left < dist_right * 0.5:
+            return True
+        return False
+    
+    def _is_turning_right_down_gesture(self, pose_landmarks, w, h):
+        """Detect if head is turned to the right and slightly downward"""
+        nose = pose_landmarks[0]
+        left_ear = pose_landmarks[7]
+        right_ear = pose_landmarks[8]
+
+        # Koordinat piksel
+        nose_x = nose.x * w
+        nose_y = nose.y * h
+        left_ear_x = left_ear.x * w
+        right_ear_x = right_ear.x * w
+        left_ear_y = left_ear.y * h
+        right_ear_y = right_ear.y * h
+
+        # Deteksi arah kanan
+        dist_left = abs(nose_x - left_ear_x)
+        dist_right = abs(nose_x - right_ear_x)
+        looking_right = dist_left < dist_right * 0.5
+
+        # Deteksi arah bawah (dari posisi hidung terhadap rata-rata telinga)
+        ear_avg_y = (left_ear_y + right_ear_y) / 2
+        looking_down = nose_y > ear_avg_y + (h * 0.03)
+
+        return looking_right and looking_down
+
+
+    def _is_turning_left_down_gesture(self, pose_landmarks, w, h):
+        """Detect if head is turned to the left and slightly downward"""
+        nose = pose_landmarks[0]
+        left_ear = pose_landmarks[7]
+        right_ear = pose_landmarks[8]
+
+        # Koordinat piksel
+        nose_x = nose.x * w
+        nose_y = nose.y * h
+        left_ear_x = left_ear.x * w
+        right_ear_x = right_ear.x * w
+        left_ear_y = left_ear.y * h
+        right_ear_y = right_ear.y * h
+
+        # Deteksi arah kiri
+        dist_left = abs(nose_x - left_ear_x)
+        dist_right = abs(nose_x - right_ear_x)
+        looking_left = dist_right < dist_left * 0.5
+
+        # Deteksi arah bawah
+        ear_avg_y = (left_ear_y + right_ear_y) / 2
+        looking_down = nose_y > ear_avg_y + 10  # offset toleransi
+
+        return looking_left and looking_down
+
     
     def _is_grenade_gesture(self, landmarks, w, h):
         """Detect grenade throwing gesture"""

@@ -21,7 +21,10 @@ class KeyBindings:
     
     ACTION_KEYS = {
         "idle": None,      # No key press
-        "run": Key.right,        # Move forward
+        "turn_right": Key.right,        # Move forward
+        "turn_left": Key.left,        # Move backward
+        "turn_right_down": [Key.right, Key.down],        # Move forward while crouching
+        "turn_left_down": [Key.left, Key.down],        # Move backward while crouching
         "shoot": 'x',      # Shoot weapon
         "grenade": 's',    # Throw grenade
         "jump": 'z'        # Jump
