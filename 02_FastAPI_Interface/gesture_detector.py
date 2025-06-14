@@ -88,9 +88,6 @@ class GestureDetector:
                 # Backward gesture: Hand on right side and lower/middle height
                 elif self._is_backward_gesture(landmarks, w, h):
                     action = "backward"
-                # Shoot up gesture: Hand raised high, index finger pointing up
-                elif self._is_shoot_up_gesture(landmarks, w, h):
-                    action = "shoot_up"
         
         # Check for pose gestures (jumping and crouching)
         if pose_results.pose_landmarks:
@@ -254,19 +251,6 @@ class GestureDetector:
         wrist_y = wrist.y * h
         
         if wrist_x > w * 0.7 and wrist_y > h * 0.4 and wrist_y < h * 0.7:
-            return True
-        return False
-    
-    def _is_shoot_up_gesture(self, landmarks, w, h):
-        """Detect shooting upward gesture"""
-        wrist = landmarks[0]
-        index_tip = landmarks[8]
-        
-        wrist_y = wrist.y * h
-        index_y = index_tip.y * h
-        
-        # Hand raised high, index finger pointing up
-        if wrist_y < h * 0.3 and index_y < wrist_y:
             return True
         return False
     

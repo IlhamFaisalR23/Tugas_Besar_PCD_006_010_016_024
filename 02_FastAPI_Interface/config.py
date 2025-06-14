@@ -28,7 +28,6 @@ class KeyBindings:
         "run": Key.right,        # Move forward
         "backward": Key.left,    # Move backward
         "shoot": 'x',      # Shoot weapon
-        "shoot_up": [Key.up, 'x'],  # Shoot upward (kombinasi tombol)
         "grenade": 's',    # Throw grenade
         "jump": 'z',       # Jump
         "crouch": Key.down       # Crouch
