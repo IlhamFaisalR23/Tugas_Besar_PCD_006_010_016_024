@@ -7,33 +7,31 @@ class KeyboardController:
         self.keyboard = Controller()
         self.current_action = "idle"
         self.key_pressed = []
+        self.pressed_keys = set()
         self.last_action_time = time.time()
 
     def execute_action(self, action):
         current_time = time.time()
 
-        # Special case for repeated shoot presses
         if action == "shoot":
-            if current_time - self.last_action_time >= 0.15:  # spam every 150ms
+            if current_time - self.last_action_time >= 0.15:
                 self._tap_key('x')
                 self.last_action_time = current_time
             return
 
-        # Normal behavior for other actions
         if current_time - self.last_action_time < 0.1:
             return
 
         if action != self.current_action:
-            self._release_current_keys()
+            self._release_all_keys()
             self._press_action_keys(action)
             self.current_action = action
             self.last_action_time = current_time
 
     def _tap_key(self, key):
-        """Tap a key (press + release quickly)"""
         try:
             self.keyboard.press(key)
-            time.sleep(0.02)  # short hold
+            time.sleep(0.02)
             self.keyboard.release(key)
             print(f"Tapped: {key}")
         except Exception as e:
@@ -48,21 +46,20 @@ class KeyboardController:
             try:
                 for key in keys:
                     self.keyboard.press(key)
-                    print(f"Pressed: {key}")
-                self.key_pressed = keys
+                    self.pressed_keys.add(key)
+                    print(f"Pressed: {key} for action: {action}")
             except Exception as e:
                 print(f"Error pressing keys {keys}: {e}")
 
-    def _release_current_keys(self):
-        if self.key_pressed:
+    def _release_all_keys(self):
+        for key in list(self.pressed_keys):
             try:
-                for key in self.key_pressed:
-                    self.keyboard.release(key)
-                    print(f"Released: {key}")
-                self.key_pressed = []
+                self.keyboard.release(key)
+                print(f"Released: {key}")
             except Exception as e:
-                print(f"Error releasing keys: {e}")
+                print(f"Error releasing key {key}: {e}")
+        self.pressed_keys.clear()
+        self.current_action = "idle"
 
     def release_all_keys(self):
-        self._release_current_keys()
-        self.current_action = "idle"
+        self._release_all_keys()

@@ -85,8 +85,14 @@ class GestureDetector:
                 # Run gesture: Hand moving forward
                 elif self._is_running_gesture(landmarks, w, h):
                     action = "run"
+                # Backward gesture: Hand on right side and lower/middle height
+                elif self._is_backward_gesture(landmarks, w, h):
+                    action = "backward"
+                # Shoot up gesture: Hand raised high, index finger pointing up
+                elif self._is_shoot_up_gesture(landmarks, w, h):
+                    action = "shoot_up"
         
-        # Check for pose gestures (jumping)
+        # Check for pose gestures (jumping and crouching)
         if pose_results.pose_landmarks:
             landmarks = pose_results.pose_landmarks.landmark
             if self._is_jumping_gesture(landmarks, w, h):
@@ -99,6 +105,8 @@ class GestureDetector:
                 action = "turn_left"
             elif self._is_turning_right_gesture(landmarks, w, h):
                 action = "turn_right"
+            elif self._is_head_down_gesture(pose_results.pose_landmarks.landmark, w, h):
+                action = "crouch"
         
         return action
     
@@ -237,6 +245,31 @@ class GestureDetector:
             return True
         return False
     
+    def _is_backward_gesture(self, landmarks, w, h):
+        """Detect backward movement gesture"""
+        wrist = landmarks[0]
+        
+        # Hand on right side of screen and lower/middle height
+        wrist_x = wrist.x * w
+        wrist_y = wrist.y * h
+        
+        if wrist_x > w * 0.7 and wrist_y > h * 0.4 and wrist_y < h * 0.7:
+            return True
+        return False
+    
+    def _is_shoot_up_gesture(self, landmarks, w, h):
+        """Detect shooting upward gesture"""
+        wrist = landmarks[0]
+        index_tip = landmarks[8]
+        
+        wrist_y = wrist.y * h
+        index_y = index_tip.y * h
+        
+        # Hand raised high, index finger pointing up
+        if wrist_y < h * 0.3 and index_y < wrist_y:
+            return True
+        return False
+    
     def _is_jumping_gesture(self, pose_landmarks, w, h):
         """Detect jumping gesture from pose"""
         if not pose_landmarks:
@@ -254,5 +287,24 @@ class GestureDetector:
         
         # If arms are raised above shoulders (jumping motion)
         if shoulder_avg_y < h * 0.3:
+            return True
+        return False
+
+    def _is_head_down_gesture(self, pose_landmarks, w, h):
+        """Detect head down gesture (nodding)"""
+        if not pose_landmarks:
+            return False
+            
+        # Get key pose points for head
+        nose = pose_landmarks[0]  # Landmark 0 is the nose
+        left_ear = pose_landmarks[7]  # Landmark 7 is the left ear
+        right_ear = pose_landmarks[8]  # Landmark 8 is the right ear
+        
+        # Calculate average ear height
+        ear_avg_y = (left_ear.y + right_ear.y) / 2 * h
+        nose_y = nose.y * h
+        
+        # If nose is below the ears (head is down)
+        if nose_y > ear_avg_y + 20:  # Threshold of 20 pixels
             return True
         return False

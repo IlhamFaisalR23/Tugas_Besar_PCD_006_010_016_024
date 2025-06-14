@@ -25,9 +25,13 @@ class KeyBindings:
         "turn_left": Key.left,        # Move backward
         "turn_right_down": [Key.right, Key.down],        # Move forward while crouching
         "turn_left_down": [Key.left, Key.down],        # Move backward while crouching
+        "run": Key.right,        # Move forward
+        "backward": Key.left,    # Move backward
         "shoot": 'x',      # Shoot weapon
+        "shoot_up": [Key.up, 'x'],  # Shoot upward (kombinasi tombol)
         "grenade": 's',    # Throw grenade
-        "jump": 'z'        # Jump
+        "jump": 'z',       # Jump
+        "crouch": Key.down       # Crouch
     }
 
 class APIConfig:
