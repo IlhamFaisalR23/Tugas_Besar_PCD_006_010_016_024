@@ -6,13 +6,20 @@ class KeyboardController:
     def __init__(self):
         self.keyboard = Controller()
         self.current_action = "idle"
-        self.key_pressed = []  # support multiple keys
+        self.key_pressed = []
         self.last_action_time = time.time()
 
     def execute_action(self, action):
-        """Execute keyboard action based on gesture"""
         current_time = time.time()
 
+        # Special case for repeated shoot presses
+        if action == "shoot":
+            if current_time - self.last_action_time >= 0.15:  # spam every 150ms
+                self._tap_key('x')
+                self.last_action_time = current_time
+            return
+
+        # Normal behavior for other actions
         if current_time - self.last_action_time < 0.1:
             return
 
@@ -22,15 +29,22 @@ class KeyboardController:
             self.current_action = action
             self.last_action_time = current_time
 
-    def _press_action_keys(self, action):
-        """Press key(s) corresponding to action"""
-        key_map = KeyBindings.ACTION_KEYS
+    def _tap_key(self, key):
+        """Tap a key (press + release quickly)"""
+        try:
+            self.keyboard.press(key)
+            time.sleep(0.02)  # short hold
+            self.keyboard.release(key)
+            print(f"Tapped: {key}")
+        except Exception as e:
+            print(f"Error tapping key {key}: {e}")
 
+    def _press_action_keys(self, action):
+        key_map = KeyBindings.ACTION_KEYS
         if action in key_map:
             keys = key_map[action]
             if not isinstance(keys, list):
-                keys = [keys]  # convert to list if single key
-
+                keys = [keys]
             try:
                 for key in keys:
                     self.keyboard.press(key)
@@ -40,7 +54,6 @@ class KeyboardController:
                 print(f"Error pressing keys {keys}: {e}")
 
     def _release_current_keys(self):
-        """Release currently pressed key(s)"""
         if self.key_pressed:
             try:
                 for key in self.key_pressed:
@@ -51,6 +64,5 @@ class KeyboardController:
                 print(f"Error releasing keys: {e}")
 
     def release_all_keys(self):
-        """Release all keys when stopping"""
         self._release_current_keys()
         self.current_action = "idle"
