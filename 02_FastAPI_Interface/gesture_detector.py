@@ -91,17 +91,12 @@ class GestureDetector:
                 # Shoot up gesture: Hand raised high, index finger pointing up
                 elif self._is_shoot_up_gesture(landmarks, w, h):
                     action = "shoot_up"
-                # Crouch gesture: Hand low on the screen
-                elif self._is_crouch_gesture(pose_results.pose_landmarks.landmark, w, h):
-                    action = "crouch"
         
         # Check for pose gestures (jumping and crouching)
         if pose_results.pose_landmarks:
-            pose_landmarks = pose_results.pose_landmarks.landmark
-            
-            if self._is_jumping_gesture(pose_landmarks, w, h):
+            if self._is_jumping_gesture(pose_results.pose_landmarks.landmark, w, h):
                 action = "jump"
-            elif self._is_crouch_gesture(pose_landmarks, w, h):
+            elif self._is_head_down_gesture(pose_results.pose_landmarks.landmark, w, h):
                 action = "crouch"
         
         return action
@@ -172,30 +167,6 @@ class GestureDetector:
             return True
         return False
     
-    def _is_crouch_gesture(self, pose_landmarks, w, h):
-        """Detect crouching gesture using head position"""
-        if not pose_landmarks:
-            return False
-        
-        # Dapatkan landmark untuk kepala dan bahu
-        nose = pose_landmarks[0]  # Landmark hidung
-        left_shoulder = pose_landmarks[11]
-        right_shoulder = pose_landmarks[12]
-        
-        # Hitung posisi vertikal rata-rata bahu
-        shoulder_avg_y = (left_shoulder.y + right_shoulder.y) / 2 * h
-        
-        # Posisi kepala (hidung)
-        nose_y = nose.y * h
-        
-        # Kriteria menunduk:
-        # 1. Kepala (hidung) berada jauh di bawah rata-rata bahu
-        # 2. Perbedaan posisi vertikal cukup signifikan
-        if nose_y > shoulder_avg_y + (h * 0.2):  # Kepala 20% di bawah rata-rata bahu
-            return True
-        
-        return False
-    
     def _is_jumping_gesture(self, pose_landmarks, w, h):
         """Detect jumping gesture from pose"""
         if not pose_landmarks:
@@ -213,5 +184,24 @@ class GestureDetector:
         
         # If arms are raised above shoulders (jumping motion)
         if shoulder_avg_y < h * 0.3:
+            return True
+        return False
+
+    def _is_head_down_gesture(self, pose_landmarks, w, h):
+        """Detect head down gesture (nodding)"""
+        if not pose_landmarks:
+            return False
+            
+        # Get key pose points for head
+        nose = pose_landmarks[0]  # Landmark 0 is the nose
+        left_ear = pose_landmarks[7]  # Landmark 7 is the left ear
+        right_ear = pose_landmarks[8]  # Landmark 8 is the right ear
+        
+        # Calculate average ear height
+        ear_avg_y = (left_ear.y + right_ear.y) / 2 * h
+        nose_y = nose.y * h
+        
+        # If nose is below the ears (head is down)
+        if nose_y > ear_avg_y + 20:  # Threshold of 20 pixels
             return True
         return False
