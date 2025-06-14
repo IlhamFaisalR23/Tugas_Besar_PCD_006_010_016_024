@@ -85,11 +85,24 @@ class GestureDetector:
                 # Run gesture: Hand moving forward
                 elif self._is_running_gesture(landmarks, w, h):
                     action = "run"
+                # Backward gesture: Hand on right side and lower/middle height
+                elif self._is_backward_gesture(landmarks, w, h):
+                    action = "backward"
+                # Shoot up gesture: Hand raised high, index finger pointing up
+                elif self._is_shoot_up_gesture(landmarks, w, h):
+                    action = "shoot_up"
+                # Crouch gesture: Hand low on the screen
+                elif self._is_crouch_gesture(pose_results.pose_landmarks.landmark, w, h):
+                    action = "crouch"
         
-        # Check for pose gestures (jumping)
+        # Check for pose gestures (jumping and crouching)
         if pose_results.pose_landmarks:
-            if self._is_jumping_gesture(pose_results.pose_landmarks.landmark, w, h):
+            pose_landmarks = pose_results.pose_landmarks.landmark
+            
+            if self._is_jumping_gesture(pose_landmarks, w, h):
                 action = "jump"
+            elif self._is_crouch_gesture(pose_landmarks, w, h):
+                action = "crouch"
         
         return action
     
@@ -132,6 +145,55 @@ class GestureDetector:
         wrist_x = wrist.x * w
         if wrist_x < w * 0.3:  # Hand on left side (forward in mirror)
             return True
+        return False
+    
+    def _is_backward_gesture(self, landmarks, w, h):
+        """Detect backward movement gesture"""
+        wrist = landmarks[0]
+        
+        # Hand on right side of screen and lower/middle height
+        wrist_x = wrist.x * w
+        wrist_y = wrist.y * h
+        
+        if wrist_x > w * 0.7 and wrist_y > h * 0.4 and wrist_y < h * 0.7:
+            return True
+        return False
+    
+    def _is_shoot_up_gesture(self, landmarks, w, h):
+        """Detect shooting upward gesture"""
+        wrist = landmarks[0]
+        index_tip = landmarks[8]
+        
+        wrist_y = wrist.y * h
+        index_y = index_tip.y * h
+        
+        # Hand raised high, index finger pointing up
+        if wrist_y < h * 0.3 and index_y < wrist_y:
+            return True
+        return False
+    
+    def _is_crouch_gesture(self, pose_landmarks, w, h):
+        """Detect crouching gesture using head position"""
+        if not pose_landmarks:
+            return False
+        
+        # Dapatkan landmark untuk kepala dan bahu
+        nose = pose_landmarks[0]  # Landmark hidung
+        left_shoulder = pose_landmarks[11]
+        right_shoulder = pose_landmarks[12]
+        
+        # Hitung posisi vertikal rata-rata bahu
+        shoulder_avg_y = (left_shoulder.y + right_shoulder.y) / 2 * h
+        
+        # Posisi kepala (hidung)
+        nose_y = nose.y * h
+        
+        # Kriteria menunduk:
+        # 1. Kepala (hidung) berada jauh di bawah rata-rata bahu
+        # 2. Perbedaan posisi vertikal cukup signifikan
+        if nose_y > shoulder_avg_y + (h * 0.2):  # Kepala 20% di bawah rata-rata bahu
+            return True
+        
         return False
     
     def _is_jumping_gesture(self, pose_landmarks, w, h):
