@@ -76,8 +76,10 @@ class GestureDetector:
                 middle_pos = (int(middle_tip.x * w), int(middle_tip.y * h))
                 
                 # Gesture detection logic
+                if self._is_shooting_upward_gesture(landmarks, w, h):
+                    action = "shoot_up"
                 # Shoot gesture: Hand raised like holding a gun
-                if self._is_shooting_gesture(landmarks, w, h):
+                elif self._is_shooting_gesture(landmarks, w, h):
                     action = "shoot"
                 # Grenade gesture: Hand behind back motion
                 elif self._is_grenade_gesture(landmarks, w, h):
@@ -124,6 +126,33 @@ class GestureDetector:
             return True
         return False
     
+    def _is_shooting_upward_gesture(self, landmarks, w, h):
+        wrist = landmarks[0]
+        index_tip = landmarks[8]
+        index_mcp = landmarks[5]
+        middle_tip = landmarks[12]
+        ring_tip = landmarks[16]
+        pinky_tip = landmarks[20]
+
+        wrist_y = wrist.y * h
+        index_y = index_tip.y * h
+        index_vector_y = index_tip.y - index_mcp.y
+
+        middle_y = middle_tip.y * h
+        ring_y = ring_tip.y * h
+        pinky_y = pinky_tip.y * h
+
+        # Revisi: naikkan toleransi tangan dan jari melipat
+        hand_high = wrist_y < h * 0.6
+        index_pointing_up = index_vector_y < -0.05
+        fingers_bent = sum([
+            middle_y > index_y + 10,
+            ring_y > index_y + 10,
+            pinky_y > index_y + 10
+        ]) >= 2
+        
+        return hand_high and index_pointing_up and fingers_bent
+
     def _is_turning_left_gesture(self, pose_landmarks, w, h):
         """Detect if head is turned 45 degrees to the left"""
         nose = pose_landmarks[0]

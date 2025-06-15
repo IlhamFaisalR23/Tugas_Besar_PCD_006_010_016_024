@@ -27,7 +27,8 @@ class KeyBindings:
         "turn_left_down": [Key.left, Key.down],        # Move backward while crouching
         "run": Key.right,        # Move forward
         "backward": Key.left,    # Move backward
-        "shoot": 'x',      # Shoot weapon
+        "shoot": 'x',     # Shoot weapon
+        "shoot_up": [Key.up, 'x'],
         "grenade": 's',    # Throw grenade
         "jump": 'z',       # Jump
         "crouch": Key.down       # Crouch
