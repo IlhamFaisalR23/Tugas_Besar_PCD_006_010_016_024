@@ -75,7 +75,7 @@ async def get_gestures():
         "gestures": {
             "idle": "Diam - tidak menekan apapun",
             "run": "Gerakan tangan ke kiri layar - tombol Panah Kanan",
-            "backward": "Gerakan tangan ke kanan layar - tombol Panah Kiri", 
+            "backward": "Menoleh ke kiri - tombol Panah Kiri", 
             "shoot": "Tangan diangkat dengan jari telunjuk lurus - tombol X", 
             "shoot_up": "Tangan diangkat tinggi dengan jari telunjuk ke atas - Panah Atas + X",
             "grenade": "Tangan di belakang - tombol S",

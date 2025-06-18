@@ -87,9 +87,6 @@ class GestureDetector:
                 # Run gesture: Hand moving forward
                 elif self._is_running_gesture(landmarks, w, h):
                     action = "run"
-                # Backward gesture: Hand on right side and lower/middle height
-                elif self._is_backward_gesture(landmarks, w, h):
-                    action = "backward"
         
         # Check for pose gestures (jumping and crouching)
         if pose_results.pose_landmarks:
@@ -267,19 +264,7 @@ class GestureDetector:
         
         # Hand extended forward
         wrist_x = wrist.x * w
-        if wrist_x < w * 0.3:  # Hand on left side (forward in mirror)
-            return True
-        return False
-    
-    def _is_backward_gesture(self, landmarks, w, h):
-        """Detect backward movement gesture"""
-        wrist = landmarks[0]
-        
-        # Hand on right side of screen and lower/middle height
-        wrist_x = wrist.x * w
-        wrist_y = wrist.y * h
-        
-        if wrist_x > w * 0.7 and wrist_y > h * 0.4 and wrist_y < h * 0.7:
+        if wrist_x < w * 0.3:
             return True
         return False
     
