@@ -9,24 +9,42 @@ class KeyboardController:
         self.key_pressed = []
         self.pressed_keys = set()
         self.last_action_time = time.time()
+        self.last_shoot_time = 0
 
     def execute_action(self, action):
         current_time = time.time()
 
-        if action == "shoot":
-            if current_time - self.last_action_time >= 0.15:
-                self._tap_key('x')
-                self.last_action_time = current_time
-            return
-
-        if current_time - self.last_action_time < 0.1:
-            return
-
         if action != self.current_action:
             self._release_all_keys()
-            self._press_action_keys(action)
+            
+            if action == "shoot_up":
+                try:
+                    self.keyboard.press(Key.up)
+                    self.pressed_keys.add(Key.up)
+                    print("Started looking up (holding Key.up)")
+                except Exception as e:
+                    print(f"Error pressing Key.up: {e}")
+            else:
+                self._press_action_keys(action)
+            
             self.current_action = action
             self.last_action_time = current_time
+
+        if action == "shoot_up":
+            if current_time - self.last_shoot_time >= 0.15:
+                try:
+                    self.keyboard.press('x')
+                    time.sleep(0.02)
+                    self.keyboard.release('x')
+                    print("Shot while looking up")
+                    self.last_shoot_time = current_time
+                except Exception as e:
+                    print(f"Error shooting: {e}")
+        
+        elif action == "shoot":
+            if current_time - self.last_shoot_time >= 0.15:
+                self._tap_key('x')
+                self.last_shoot_time = current_time
 
     def _tap_key(self, key):
         try:
