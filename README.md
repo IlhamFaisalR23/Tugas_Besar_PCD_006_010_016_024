@@ -38,7 +38,7 @@ Kontrol game **Metal Slug** menggunakan **gesture tangan dan gerakan tubuh** den
    `git clone https://github.com/IlhamFaisalR23/Tugas_Besar_PCD_006_010_016_024.git`  
 
 2. Masuk ke direktori hasil clone:  
-   `cd Tugas_Besar_PCD_QuadroPipe-006_010_016_024`  
+   `cd Tugas_Besar_PCD_006_010_016_024`  
 
 3. Pindah ke folder aplikasi utama:  
    `cd 02_FastAPI_Interface`  
